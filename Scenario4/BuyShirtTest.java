@@ -1,12 +1,13 @@
 package Scenario4;
 
-import static org.junit.Assert.*;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import org.testng.annotations.Test;
+import org.testng.AssertJUnit;
+import org.testng.annotations.AfterMethod;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Parameters;
 
 import com.relevantcodes.extentreports.ExtentReports;
 import com.relevantcodes.extentreports.ExtentTest;
@@ -21,12 +22,18 @@ public class BuyShirtTest {
 	Account accountPage;
 	TShirt tshirtPage;
 	Order orderPage;
-	@Before
-	public void setup() {
+	@BeforeTest
+	@Parameters("browser")
+	public void setup(String browser) throws Exception{
 		
-		
-		System.setProperty("webdriver.chrome.driver","C:\\Users\\Administrator\\Desktop\\Selenium\\Selenium\\chromedriver.exe");
-		driver = new ChromeDriver();
+		if (browser.equalsIgnoreCase("firefox")){
+			System.setProperty("webdriver.gecko.driver","C:\\Users\\Administrator\\Desktop\\Selenium\\Selenium\\geckodriver.exe");
+			driver = new FirefoxDriver();
+		}
+		else {
+			System.setProperty("webdriver.chrome.driver","C:\\Users\\Administrator\\Desktop\\Selenium\\Selenium\\chromedriver.exe");
+			driver = new ChromeDriver();
+		}
 		driver.get("http://automationpractice.com");
 		
 		
@@ -43,7 +50,7 @@ public class BuyShirtTest {
 		
 		String homePageTitle = homePage.getTitle();
 		if (homePageTitle.equals("My Store")){
-			assertEquals(homePageTitle, "My Store");
+			AssertJUnit.assertEquals(homePageTitle, "My Store");
 			test.log(LogStatus.PASS, "Verify title of home page");
 			}
 		else{
@@ -63,7 +70,7 @@ public class BuyShirtTest {
 		String signInPageTitle = signInPage.getTitle();
 		if (signInPageTitle.equals("Login - My Store")){
 			
-			assertEquals(signInPageTitle, "Login - My Store");
+			AssertJUnit.assertEquals(signInPageTitle, "Login - My Store");
 			test.log(LogStatus.PASS, "Verify title of signin page");
 		}
 		else{
@@ -81,7 +88,7 @@ public class BuyShirtTest {
 		String accountPageTitle = accountPage.getTitle();
 		if (accountPageTitle.equals("My account - My Store")){
 			
-			assertEquals(accountPageTitle, "My account - My Store");
+			AssertJUnit.assertEquals(accountPageTitle, "My account - My Store");
 			test.log(LogStatus.PASS, "Verify title of account page");
 		}
 		else{
@@ -100,7 +107,7 @@ public class BuyShirtTest {
 		
 		String tshirtPageTitle = tshirtPage.getTitle();
 		if (tshirtPageTitle.equals("T-shirts - My Store")){
-			assertEquals(tshirtPageTitle, "T-shirts - My Store");
+			AssertJUnit.assertEquals(tshirtPageTitle, "T-shirts - My Store");
 			test.log(LogStatus.PASS, "Verify title of tshirt page");
 			}
 		else{
@@ -120,7 +127,7 @@ public class BuyShirtTest {
 		
 		String orderPageTitle = orderPage.getTitle();
 		if (orderPageTitle.equals("Order - My Store")){
-			assertEquals(orderPageTitle, "Order - My Store");
+			AssertJUnit.assertEquals(orderPageTitle, "Order - My Store");
 			test.log(LogStatus.PASS, "Verify title of order page");
 			}
 		else{
@@ -129,7 +136,11 @@ public class BuyShirtTest {
 		
 		test.log(LogStatus.INFO, "The user has decided to delete the item using the trash tool");
 		orderPage.clickDeleteBtn();
-		
+		try {
+			Thread.sleep(1500);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		String orderPageAlert = orderPage.getEmptyAlert();
 		System.out.println(orderPageAlert);
 		if (orderPageAlert.contains("empty")){
@@ -143,7 +154,7 @@ public class BuyShirtTest {
 		orderPage.clickSignOut();
 		
 		}
-	@After
+	@AfterMethod
 	public void closeTest(){
 		try {
 			driver.close();
